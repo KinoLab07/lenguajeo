@@ -14,7 +14,6 @@ var peliculaVideo;
 var peliculasContador = 0;
 var enCreditos = false;
 var yaEntroAlMenu = false;
-var claveExitosa = false;
 var videoEnPausa = false;
 var terminoLaDescarga = false;
 var audioEnPlay = false;
@@ -53,56 +52,18 @@ function construirContenedores()
 	
 function construirMenu()
 {
-	if(!claveExitosa)
+	/* Aquí había una puerta con contraseña. Se comparaba en texto plano dentro
+	   de este mismo archivo, así que bastaba con abrir el código fuente del
+	   navegador para leerla: no protegía nada. La película está abierta. */
+	if(!yaEntroAlMenu)
 	{
-		divEntrar.style.display = "block";
-		divEntrar.innerHTML = "";
-		
-		var divClave = cE("div", divEntrar);
-		divClave.id = "divClave";
-		
-		var div = cE("div", divClave);
-		div.innerHTML = "Enter the password to watch this movie";
-		
-		var divError = cE("div", divClave);
-		divError.id = "divError";
-		divError.innerHTML = "The key is wrong";
-		
-		var input = cE("input", divClave);
-		
-		var botonClaveDiv = cE("div", divClave);
-		
-		var botonClave = cE("span", botonClaveDiv);
-		botonClave.id = "botonClave";
-		botonClave.innerHTML = "Enter";
-		botonClave.addEventListener("click", function()
-		{
-			if(input.value != "lenguajeo2023")
-			{
-				divError.style.display = "block";
-			}
-			else
-			{
-				claveExitosa = true;
-				divEntrar.style.display = "none";
-				divClave.style.display = "none";
-				construirMenu();
-			}
-		});
-		
+		yaEntroAlMenu = true;
+		openFullscreen(document.body);
 	}
 	else
-	{	
-		if(!yaEntroAlMenu)
-		{
-			yaEntroAlMenu = true;
-			openFullscreen(document.body);
-		}
-		else
-		{
-			divEntrar.style.display = "none";
-			divRegresar.style.display = "block";
-		}
+	{
+		divEntrar.style.display = "none";
+		divRegresar.style.display = "block";
 	}
 }
 

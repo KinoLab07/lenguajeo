@@ -116,6 +116,10 @@ ramas que hacían lo mismo.
 
 **Se puede navegar con el teclado.** Cada sendero responde a Tab y a Enter.
 
+**Fuera la contraseña.** Se comparaba en texto plano dentro de `script.js`, así
+que se leía abriendo el código fuente del navegador: no protegía nada. La
+película está abierta y se entra directo desde FILM.
+
 ### El resultado
 
 |  | Antes | Ahora |
@@ -124,17 +128,6 @@ ramas que hacían lo mismo.
 | JavaScript | 3,7 MB | 30 KB |
 | Caché entre visitas | ninguna | completa |
 | En el móvil | roto | funciona |
-
-## Queda una cosa por decidir: la contraseña
-
-`script.js` compara contra `"lenguajeo2023"` en texto plano. Cualquiera que
-abra el código fuente del navegador la ve — hoy ya pasa en el sitio publicado,
-pero **en un repositorio público quedaría además en el historial**.
-
-Desde el navegador no hay forma de proteger de verdad un archivo estático. Si
-la película debe seguir restringida, hace falta un servidor que valide la
-contraseña, o dejar los vídeos en una plataforma con enlaces privados. Si no,
-lo honesto es quitarla.
 
 ## Publicar en GitHub Pages
 

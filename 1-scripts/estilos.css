@@ -389,33 +389,6 @@ video
 	margin:12% auto!important;
 }
 
-#divClave
-{
-	padding-top:40px;	
-}
-
-input
-{
-	margin:14px 0px;
-}
-
-#botonClave
-{
-	cursor:pointer;
-}
-
-#botonClave:hover
-{
-	color:#69C;
-}
-
-#divError
-{
-	padding-top:14px;
-	color:#F37;
-	display:none;	
-}
-
 #loadingImg
 {
 	position:absolute;
