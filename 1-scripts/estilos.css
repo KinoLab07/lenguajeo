@@ -1,0 +1,554 @@
+
+@font-face 
+{
+  font-family:veterano;
+  src: url("5-fuentes/andalemono.ttf");
+}
+
+@media only screen and (max-width: 700px) 
+{
+	body 
+	{
+		
+	}
+}
+
+
+body
+{
+	margin:0;
+	padding:0;
+	margin:auto;
+	text-align:center;
+	background-color:#000;
+	font-family:'veterano';
+	overflow-x: hidden;
+	overflow-y: scroll;
+	color:#FFF;
+}
+
+video
+{
+	position:absolute;
+	z-index:990;
+	left:0px;
+	width:100%;
+	top:16%;
+}
+
+canvas
+{
+	display:none;	
+}
+
+#divEntrar
+{
+	position:absolute;
+	z-index:900;
+	width:100%;
+	height:100%;
+	top:0%;
+	left:0%;
+	padding:0%;
+	background-color:#000;
+	color:#FFF;
+}
+
+#tituloEntrada
+{
+	font-size:2.2em;
+	padding-top:3%;
+}
+
+#creditos1
+{
+	padding-top:1.5%;
+	font-size:0.9em;	
+}
+
+#creditos2
+{
+	padding-top:0.2%;
+	font-size:1.2em;	
+}
+
+.creditosTexto
+{
+	padding-top:6%;
+	line-height:32px;
+	font-size:1.1em;	
+}
+
+@media only screen and (max-width: 700px) 
+{
+	
+	.creditosTexto
+	{
+		padding:6% 4%;
+		line-height:26px;
+		font-size:1em;
+	}
+}
+
+#divBotones
+{
+	width:100%;
+}
+
+#filme
+{
+	font-size:1.6em;
+	cursor:pointer;
+	float:left;
+	margin-left:2%;
+}
+
+#filme:hover
+{
+	color:#69F;
+}
+
+#credits
+{
+	font-size:1.6em;
+	cursor:pointer;
+	float:right;
+	margin-right:2%;
+}
+
+#credits:hover
+{
+	color:#69F;
+}
+
+.divCreditos
+{
+	padding:4% 14%;
+	line-height:30px;
+	font-size:1.1em;
+	overflow:scroll;	
+}
+
+#divRegresar
+{
+	position:fixed;
+	font-size:1.6em;
+	left:10px;
+	top:10px;
+	width:25px;
+	cursor:pointer;
+	z-index:950;
+	display:none;
+}
+
+#divTexto
+{
+	line-height:28px;	
+}
+
+@media only screen and (max-width: 700px) 
+{
+	#divTexto
+	{
+		line-height:20px;
+		font-size:0.9em;	
+	}	
+}
+
+#BotonPlay
+{
+	margin-top:3%;
+	font-size:1.4em;	
+}
+
+.contenedorImg
+{
+	position:absolute;
+	width:11.11%;
+	height:18%;
+	overflow:hidden;
+	cursor:pointer;
+	left:0px;
+	z-index:2;
+}
+
+.contenedorImg:hover
+{
+
+}
+
+.contenedorImg img
+{
+	width:100%;
+}
+
+.contenedorInfo
+{
+	position:absolute;
+	width:11.11%;
+	height:18%;
+	overflow:hidden;
+	cursor:pointer;
+	left:0px;
+	color:#fff;
+	z-index:3;
+	background-color:#000;
+	display:block;
+	opacity:0;
+}
+
+.contenedorInfo2
+{
+	position:absolute;
+	width:11.11%;
+	height:18%;
+	overflow:hidden;
+	cursor:pointer;
+	left:0px;
+	color:#fff;
+	z-index:3;
+	background-color:#000;
+	display:block;
+	opacity:0;
+}
+
+.territorio
+{
+	padding-top:8%;	
+}
+
+.numero
+{
+	padding:6% 0%;
+	height:14%;
+}
+
+#cImg-videoObj0
+{
+	left:55.55%;
+	top:5%;	
+}
+
+#cInfo-videoObj0
+{
+	left:55.55%;
+	top:5%;	
+}
+
+#cImg-videoObj9
+{
+	left:33.33%;
+	top:5%;	
+}
+
+#cInfo-videoObj9
+{
+	left:33.33%;
+	top:5%;	
+}
+
+#cImg-videoObj1
+{
+	left:72.72%;
+	top:20%;	
+}
+
+#cInfo-videoObj1
+{
+	left:72.72%;;
+	top:20%;	
+}
+
+#cImg-videoObj8
+{
+	left:16.16%;
+	top:20%;	
+}
+
+#cInfo-videoObj8
+{
+	left:16.16%;
+	top:20%;	
+}
+
+#cImg-videoObj2
+{
+	left:83.33%;
+	top:45%;	
+}
+
+#cInfo-videoObj2
+{
+	left:83.33%;
+	top:45%;	
+}
+
+#cImg-videoObj7
+{
+	left:5.55%;
+	top:45%;	
+}
+
+#cInfo-videoObj7
+{
+	left:5.55%;
+	top:45%;	
+}
+
+#cImg-videoObj3
+{
+	left:72.72%;
+	top:70%;	
+}
+
+#cInfo-videoObj3
+{
+	left:72.72%;
+	top:70%;	
+}
+
+#cImg-videoObj6
+{
+	left:16.16%;
+	top:70%;	
+}
+
+#cInfo-videoObj6
+{
+	left:16.16%;
+	top:70%;	
+}
+
+#cImg-videoObj4
+{
+	left:55.55%;
+	top:80%;
+}
+
+#cInfo-videoObj4
+{
+	left:55.55%;
+	top:80%;	
+}
+
+#cImg-videoObj5
+{
+	left:33.33%;
+	top:80%;	
+}
+
+#cInfo-videoObj5
+{
+	left:33.33%;
+	top:80%;	
+}
+
+.videoTrailer
+{
+	width:100%;
+}
+
+.videoTrailer:hover
+{
+	/*filter: invert(100%) grayscale(100%) brightness(40%) sepia(100%) hue-rotate(-50deg) saturate(200%) contrast(0.8);*/
+}
+
+.videoS
+{
+	/*filter: invert(100%);*/
+}
+
+.videoS:hover
+{
+	/*filter: invert(2%);*/
+}
+
+.nVideoPopup
+{
+	position:absolute;
+	width:43%;
+	height:18%;
+	text-align:center;
+	padding-top:6%;
+	background-color:red;
+	background-color:rgba(153,255,102,0);
+	z-index:10;
+}
+
+.nVideoTexto
+{
+	background-color:red;
+	padding:3% 6%;
+	border-radius:3px;
+	background-color:rgba(153,255,102,0.8);
+}
+
+#divPopup
+{
+	position:absolute;
+	left:0px;
+	top:0px;
+	height:100%;
+	width:100%;
+	z-index:10;
+	opacity:1;
+	display:none;
+	text-align:center;
+	z-index:980;	
+}
+
+#divVideosPelicula
+{
+	background-color:#000;
+	height:100%;
+	vertical-align:middle;
+	margin:auto;	
+}
+
+#divVideosPelicula video
+{
+	margin:12% auto!important;
+}
+
+.x
+{
+	cursor:pointer!important;
+	position:absolute;
+	z-index:1000;
+	left:0px;
+	top:4px;
+	background-color:#333;
+	color:#fff;
+	padding:4px 12px;
+	font-size:1.2em;
+	border-radius:4px;	
+}
+
+.x:hover
+{
+	cursor:pointer!important;
+	background-color:#CCC;
+	color:#333;	
+}
+
+#divInfo
+{
+	position:absolute;
+	top:40%;
+	left:32%;
+	width:36%;
+	color:#CCC;
+	font-size:1.2em;
+	z-index:1;
+}
+
+#divInfoBoton
+{
+	padding:8% 0%;
+	display:none;
+	cursor:pointer;
+	font-size:1.2em;
+}
+
+#divInfoBoton:hover
+{
+	
+}
+
+.aparece
+{
+	animation:aparecer 4s;
+	opacity:1!important;
+}
+
+.desaparece
+{
+	animation:desaparecer 4s;
+	opacity:0!important;
+}
+
+@keyframes aparecer
+{
+	from 
+	{ 
+		opacity:0;
+	}
+	to   
+	{ 
+		opacity:1;
+	}
+}
+
+@keyframes desaparecer
+{
+	from 
+	{ 
+		opacity:1;
+	}
+	to   
+	{ 
+		opacity:0;
+	}
+}
+
+.peliculaFull
+{
+	width:100%;
+	margin:12% auto!important;
+}
+
+#divClave
+{
+	padding-top:40px;	
+}
+
+input
+{
+	margin:14px 0px;
+}
+
+#botonClave
+{
+	cursor:pointer;
+}
+
+#botonClave:hover
+{
+	color:#69C;
+}
+
+#divError
+{
+	padding-top:14px;
+	color:#F37;
+	display:none;	
+}
+
+#loadingImg
+{
+	position:absolute;
+	width:6%;
+	left:47%;
+	top:30%;
+	border-radius:6px;
+	z-index:400;
+}
+
+#divPopupDescarga
+{
+	position:fixed;
+	z-index:4000;
+	top:12%;
+	left:45%;
+	width:10%;	
+	color:#fff;
+	text-align:center;
+	border-radius:4px;
+	font-size:1em;
+	font-weight:bold;
+	padding:2px 6px;
+	background-color:#333;
+	display:none;
+}
+
+

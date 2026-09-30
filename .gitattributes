@@ -1,0 +1,8 @@
+# Sin conversión de saltos de línea: hay binarios grandes y los .js originales
+# vienen con CRLF. (Este repo se crea con core.autocrlf=input en la máquina.)
+* -text
+*.mp4 binary
+*.mp3 binary
+*.png binary
+*.gif binary
+*.ttf binary
