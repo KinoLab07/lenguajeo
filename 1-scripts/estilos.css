@@ -2,7 +2,7 @@
 @font-face 
 {
   font-family:veterano;
-  src: url("5-fuentes/andalemono.ttf");
+  src: url("../5-fuentes/andalemono.ttf");
 }
 
 @media only screen and (max-width: 700px) 
@@ -34,11 +34,6 @@ video
 	left:0px;
 	width:100%;
 	top:16%;
-}
-
-canvas
-{
-	display:none;	
 }
 
 #divEntrar
@@ -161,20 +156,36 @@ canvas
 	font-size:1.4em;	
 }
 
-.contenedorImg
+/* La constelación. Cada sendero es un contenedor con la miniatura y la ficha
+   dentro; la ficha aparece encima al pasar el ratón. */
+#constelacion
+{
+	position:absolute;
+	inset:0;
+	z-index:2;
+}
+
+.sendero
 {
 	position:absolute;
 	width:11.11%;
 	height:18%;
-	overflow:hidden;
 	cursor:pointer;
-	left:0px;
-	z-index:2;
+	overflow:hidden;
 }
 
-.contenedorImg:hover
+.sendero:focus-visible
 {
+	outline:2px solid #69F;
+	outline-offset:2px;
+}
 
+.contenedorImg
+{
+	position:absolute;
+	inset:0;
+	overflow:hidden;
+	z-index:2;
 }
 
 .contenedorImg img
@@ -185,31 +196,20 @@ canvas
 .contenedorInfo
 {
 	position:absolute;
-	width:11.11%;
-	height:18%;
+	inset:0;
 	overflow:hidden;
-	cursor:pointer;
-	left:0px;
 	color:#fff;
 	z-index:3;
 	background-color:#000;
-	display:block;
 	opacity:0;
+	transition:opacity 0.2s;
 }
 
-.contenedorInfo2
+.sendero:hover .contenedorInfo,
+.sendero:focus-visible .contenedorInfo,
+.sendero.escogido .contenedorInfo
 {
-	position:absolute;
-	width:11.11%;
-	height:18%;
-	overflow:hidden;
-	cursor:pointer;
-	left:0px;
-	color:#fff;
-	z-index:3;
-	background-color:#000;
-	display:block;
-	opacity:0;
+	opacity:1;
 }
 
 .territorio
@@ -223,125 +223,17 @@ canvas
 	height:14%;
 }
 
-#cImg-videoObj0
-{
-	left:55.55%;
-	top:5%;	
-}
-
-#cInfo-videoObj0
-{
-	left:55.55%;
-	top:5%;	
-}
-
-#cImg-videoObj9
-{
-	left:33.33%;
-	top:5%;	
-}
-
-#cInfo-videoObj9
-{
-	left:33.33%;
-	top:5%;	
-}
-
-#cImg-videoObj1
-{
-	left:72.72%;
-	top:20%;	
-}
-
-#cInfo-videoObj1
-{
-	left:72.72%;;
-	top:20%;	
-}
-
-#cImg-videoObj8
-{
-	left:16.16%;
-	top:20%;	
-}
-
-#cInfo-videoObj8
-{
-	left:16.16%;
-	top:20%;	
-}
-
-#cImg-videoObj2
-{
-	left:83.33%;
-	top:45%;	
-}
-
-#cInfo-videoObj2
-{
-	left:83.33%;
-	top:45%;	
-}
-
-#cImg-videoObj7
-{
-	left:5.55%;
-	top:45%;	
-}
-
-#cInfo-videoObj7
-{
-	left:5.55%;
-	top:45%;	
-}
-
-#cImg-videoObj3
-{
-	left:72.72%;
-	top:70%;	
-}
-
-#cInfo-videoObj3
-{
-	left:72.72%;
-	top:70%;	
-}
-
-#cImg-videoObj6
-{
-	left:16.16%;
-	top:70%;	
-}
-
-#cInfo-videoObj6
-{
-	left:16.16%;
-	top:70%;	
-}
-
-#cImg-videoObj4
-{
-	left:55.55%;
-	top:80%;
-}
-
-#cInfo-videoObj4
-{
-	left:55.55%;
-	top:80%;	
-}
-
-#cImg-videoObj5
-{
-	left:33.33%;
-	top:80%;	
-}
-
-#cInfo-videoObj5
-{
-	left:33.33%;
-	top:80%;	
-}
+/* Las diez posiciones de la constelación, en óvalo alrededor del texto. */
+#sendero-0 { left:55.55%; top:5%;  }
+#sendero-9 { left:33.33%; top:5%;  }
+#sendero-1 { left:72.72%; top:20%; }
+#sendero-8 { left:16.16%; top:20%; }
+#sendero-2 { left:83.33%; top:45%; }
+#sendero-7 { left:5.55%;  top:45%; }
+#sendero-3 { left:72.72%; top:70%; }
+#sendero-6 { left:16.16%; top:70%; }
+#sendero-4 { left:55.55%; top:80%; }
+#sendero-5 { left:33.33%; top:80%; }
 
 .videoTrailer
 {
@@ -552,3 +444,133 @@ input
 }
 
 
+
+/* Mientras un sendero carga, el indicador gira sobre negro. Antes el gif se
+   insertaba y se quitaba a mano desde el JavaScript. */
+#divPopup.cargando #divVideosPelicula
+{
+	background:#000 url("../2-imagenes/loading.gif") no-repeat center center;
+	background-size:64px 64px;
+}
+
+.avisoError
+{
+	padding-top:40vh;
+	color:#F37;
+	font-size:1.1em;
+}
+
+/* ---------------------------------------------------------------------------
+   Teléfonos y tabletas verticales.
+
+   La constelación está colocada con coordenadas absolutas pensadas para una
+   pantalla ancha; en un móvil se amontona. Aquí pasa a ser una rejilla normal
+   de dos columnas, con la ficha siempre visible debajo de cada miniatura en
+   lugar de aparecer al pasar el ratón, que en una pantalla táctil no ocurre.
+   --------------------------------------------------------------------------- */
+@media only screen and (max-width: 900px)
+{
+	body
+	{
+		overflow-y:auto;
+	}
+
+	#constelacion
+	{
+		position:static;
+		display:grid;
+		grid-template-columns:repeat(2, 1fr);
+		gap:10px;
+		padding:10px;
+	}
+
+	.sendero
+	{
+		position:static;
+		width:auto;
+		height:auto;
+	}
+
+	.contenedorImg
+	{
+		position:static;
+		aspect-ratio:16 / 9;
+		display:flex;
+		align-items:center;
+		justify-content:center;
+	}
+
+	.contenedorInfo
+	{
+		position:static;
+		opacity:1;
+		font-size:0.8em;
+		line-height:1.35;
+		padding:6px 0 10px;
+	}
+
+	.sendero.escogido
+	{
+		outline:2px solid #69F;
+	}
+
+	.territorio
+	{
+		padding-top:4px;
+	}
+
+	.numero
+	{
+		padding:2px 0;
+		height:auto;
+	}
+
+	#tituloEntrada
+	{
+		font-size:1.5em;
+		padding-top:6%;
+	}
+
+	#creditos2
+	{
+		font-size:1.05em;
+	}
+
+	/* El texto central deja de estar flotando en medio y encabeza la lista.
+	   El relleno superior deja hueco para el botón HOME, que va fijo. */
+	#divInfo
+	{
+		position:static;
+		width:auto;
+		padding:52px 16px 8px;
+		font-size:1em;
+	}
+
+	#divInfoBoton
+	{
+		padding:18px 0;
+		font-size:1.4em;
+	}
+
+	/* El reproductor cuelga de #divPopup, no de #divVideosPelicula. Sin fijarle
+	   el top se iba a su posición estática, debajo de la caja de 100% de alto,
+	   y quedaba fuera de la pantalla. Centrado va bien en vertical. */
+	#divPopup > video
+	{
+		top:50%;
+		transform:translateY(-50%);
+		margin:0 !important;
+	}
+
+	.divCreditos
+	{
+		padding:6% 6%;
+		line-height:24px;
+		font-size:0.95em;
+	}
+
+	#filme, #credits
+	{
+		font-size:1.3em;
+	}
+}

@@ -1,1 +1,5 @@
 .DS_Store
+
+# Los vídeos no van dentro del repositorio: se publican como adjuntos de una
+# release de GitHub (ver 4-videos/LEEME.md). Aquí se quedan solo en local.
+4-videos/*.mp4
