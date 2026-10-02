@@ -14,20 +14,20 @@ var peliculaVideo;
 var peliculasContador = 0;
 var enCreditos = false;
 var yaEntroAlMenu = false;
-var claveExitosa = false;
 var videoEnPausa = false;
 var terminoLaDescarga = false;
 var audioEnPlay = false;
 
 var texto = "And it will be there, <br>in an apparent revelry of things, <br>where the unpredictable muse will show her aura.<br><br>Y será allí, <br>en un aparente jolgorio de las cosas, <br>donde la imprevisible musa mostrará su aura.";
 
-function construirPc()
+/* Los scripts van con <script defer>, así que se ejecutan en orden y con el
+   DOM ya listo. Antes index.html los bajaba uno a uno por XHR, los convertía
+   en blobs y los inyectaba, lo que además impedía que el navegador los
+   guardara en caché entre visitas. */
+document.addEventListener("DOMContentLoaded", function()
 {
-	console.log(window.innerWidth + "---" + screen.height);
-	
 	construirContenedores();
-	decargarArchivos();	
-}
+});
 
 function construirContenedores()
 {
@@ -48,86 +48,45 @@ function construirContenedores()
 	});
 	
 	construirInicio();
-	
-	divPopupDescarga = cE('div', document.body);
-	divPopupDescarga.id = "divPopupDescarga";	
 }
 	
 function construirMenu()
 {
-	if(!claveExitosa)
+	/* Aquí había una puerta con contraseña. Se comparaba en texto plano dentro
+	   de este mismo archivo, así que bastaba con abrir el código fuente del
+	   navegador para leerla: no protegía nada. La película está abierta. */
+	if(!yaEntroAlMenu)
 	{
-		divEntrar.style.display = "block";
-		divEntrar.innerHTML = "";
-		
-		var divClave = cE("div", divEntrar);
-		divClave.id = "divClave";
-		
-		var div = cE("div", divClave);
-		div.innerHTML = "Enter the password to watch this movie";
-		
-		var divError = cE("div", divClave);
-		divError.id = "divError";
-		divError.innerHTML = "The key is wrong";
-		
-		var input = cE("input", divClave);
-		
-		var botonClaveDiv = cE("div", divClave);
-		
-		var botonClave = cE("span", botonClaveDiv);
-		botonClave.id = "botonClave";
-		botonClave.innerHTML = "Enter";
-		botonClave.addEventListener("click", function()
-		{
-			if(input.value != "lenguajeo2023")
-			{
-				divError.style.display = "block";
-			}
-			else
-			{
-				claveExitosa = true;
-				divEntrar.style.display = "none";
-				divClave.style.display = "none";
-				construirMenu();
-				popupDescarga();
-			}
-		});
-		
+		yaEntroAlMenu = true;
+		openFullscreen(document.body);
 	}
 	else
-	{	
-		if(!yaEntroAlMenu)
-		{
-			yaEntroAlMenu = true;
-			openFullscreen(document.body);
-		}
-		else
-		{
-			divEntrar.style.display = "none";
-			divRegresar.style.display = "block";
-		}
+	{
+		divEntrar.style.display = "none";
+		divRegresar.style.display = "block";
 	}
 }
 
+/* Safari en iPhone no deja poner el <body> a pantalla completa y devuelve una
+   promesa rechazada. Antes eso dejaba al visitante en una pantalla en negro:
+   ahora se intenta, y pase lo que pase se sigue adelante. */
 function openFullscreen(elem)
- {
-	if (elem.requestFullscreen) 
+{
+	var peticion = elem.requestFullscreen
+		|| elem.webkitRequestFullscreen
+		|| elem.msRequestFullscreen;
+
+	if(peticion)
 	{
-		elem.requestFullscreen();
-	} 
-	else if (elem.webkitRequestFullscreen) 
-	{ 
-		elem.webkitRequestFullscreen();
-	} 
-	else if (elem.msRequestFullscreen) 
-	{ 
-		elem.msRequestFullscreen();
+		try
+		{
+			var r = peticion.call(elem);
+			if(r && r.catch) { r.catch(function(){}); }
+		}
+		catch(e) {}
 	}
-	
-	window.setTimeout(function()
-	{
-		construirEscenario();
-	}, 1500);
+
+	construirEscenario();
 }
 
 function construirInicio()
@@ -277,55 +236,93 @@ function ponerCreditos()
 function ponerPeliculas()
 {
 	audioFondo.pause();
-	divPopup.style.display = "block";		
-	divVideosPelicula.innerHTML = "";
-	
-	var loadingImg = cE("img", divVideosPelicula);
-	loadingImg.id = "loadingImg";
-	loadingImg.src = "2-imagenes/loading.gif";	
-	
-	if(peliculasContador < videosS.length)
-	{			
-		videoEnPausa = false;
-		
-		peliculaVideo = null;
-		
-		peliculaVideo = videosS[peliculasContador];
-		peliculaVideo.currentTime = 0;
-		peliculaVideo.style.display = "block";	
-		peliculaVideo.play();
-		peliculaVideo.onended = function()
-		{
-			peliculaVideo.style.display = "none";
-			peliculasContador++;
-			ponerPeliculas();
-		}
-	}
-	else
+	divPopup.style.display = "block";
+	divPopup.classList.add("cargando");
+
+	if(peliculasContador >= videosS.length)
 	{
-		divVideosPelicula.innerHTML = "";
-		divPopup.style.display = "none";
-		quitarSeleccion();		
+		cerrarPelicula();
+		return;
 	}
+
+	videoEnPausa = false;
+
+	var indice = videosS[peliculasContador];
+
+	/* Si el que toca es el que se venía precargando por detrás, se cambian los
+	   papeles y arranca sin esperar. */
+	if(reproductorEnEspera && reproductorEnEspera.dataset.indice == String(indice))
+	{
+		var anterior = reproductor;
+		reproductor = reproductorEnEspera;
+		reproductorEnEspera = anterior;
+	}
+	else if(!reproductor)
+	{
+		reproductor = crearReproductor();
+	}
+
+	if(reproductorEnEspera)
+	{
+		reproductorEnEspera.style.display = "none";
+	}
+
+	peliculaVideo = cargarEn(reproductor, indice);
+	peliculaVideo.currentTime = 0;
+	peliculaVideo.style.display = "block";
+
+	peliculaVideo.onplaying = function()
+	{
+		divPopup.classList.remove("cargando");
+		precargarSiguiente();
+	};
+
+	peliculaVideo.onended = function()
+	{
+		peliculaVideo.style.display = "none";
+		peliculasContador++;
+		ponerPeliculas();
+	};
+
+	peliculaVideo.onerror = function()
+	{
+		divPopup.classList.remove("cargando");
+		divVideosPelicula.innerHTML =
+			"<div class='avisoError'>No se pudo cargar este sendero.</div>";
+	};
+
+	var r = peliculaVideo.play();
+	if(r && r.catch) { r.catch(function(){}); }
+}
+
+function cerrarPelicula()
+{
+	if(peliculaVideo)
+	{
+		peliculaVideo.pause();
+		peliculaVideo.style.display = "none";
+	}
+
+	videoEnPausa = true;
+	divPopup.style.display = "none";
+	divPopup.classList.remove("cargando");
+	divVideosPelicula.innerHTML = "";
+	quitarSeleccion();
 }
 
 function quitarSeleccion()
-{	
+{
+	videosS.length = 0;
+
 	for(var i=0; i<listaVideosObj.length; i++)
 	{
 		var videoObj = listaVideosObj[i];
-	
+
 		videoObj.escogido = false;
-				
-		var indice = videosS.indexOf(videoObj.videoFull);
-		
-		if(indice > -1) 
-		{
-			videosS.splice(indice, 1);	
-			videoObj.contenedorInfo.style.opacity = 0;		
-		}
+		videoObj.contenedor.classList.remove("escogido");
+		videoObj.contenedor.setAttribute("aria-pressed", "false");
 	}
-	
+
 	actualizarInfo();
 	
 	window.setTimeout(function()
@@ -340,8 +337,8 @@ function actualizarInfo()
 	{
 		var videoObj = listaVideosObj[i];
 		
-		var indice = videosS.indexOf(videoObj.videoFull);
-		
+		var indice = videosS.indexOf(videoObj.indiceVideo);
+
 		if(indice>=0)
 		{
 			videoObj.nVideoTexto.style.opacity = 1;
@@ -363,27 +360,7 @@ function actualizarInfo()
 	}
 }
 
-function mostrarPopup()
-{
-
-}
-
-function preload() 
-{	
-	
-}
-
-function setup() 
-{
-
-}
-
-function draw()
-{
-	background(0);	
-}
-
-function windowResized() 
-{
-  	resizeCanvas(windowWidth, windowHeight);
-}
+/* Aquí vivían preload(), setup(), draw() y windowResized(), los ganchos de
+   p5.js. p5 pesaba 3,6 MB —el 97% del JavaScript del sitio— y lo único que
+   hacía era crear un lienzo de 100x100 y pintarlo de negro sesenta veces por
+   segundo. Ese lienzo no se veía. Lo hace el CSS del body. */

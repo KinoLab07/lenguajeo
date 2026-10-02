@@ -3,7 +3,7 @@
 Película interactiva de **Enrico Mandirola**. Súper-8 y 16mm, 25 minutos
 repartidos en diez senderos que el espectador encadena como quiera.
 
-Programación original: Alejandro Forero. p5.js 1.1.9.
+Programación original: Alejandro Forero.
 Copia descargada de `lenguajeo.kinolab07.co` el 30 de septiembre de 2026.
 
 ## Cómo verlo en local
@@ -12,22 +12,31 @@ Copia descargada de `lenguajeo.kinolab07.co` el 30 de septiembre de 2026.
 python3 -m http.server 4708
 ```
 
-y abrir <http://localhost:4708>. No hace falta instalar nada: es HTML, CSS y
-JavaScript sin dependencias ni proceso de compilación.
+y abrir <http://localhost:4708>. Con los diez `.mp4` en `4-videos/` funciona
+sin conexión. No hay dependencias ni proceso de compilación.
+
+> El servidor de Python no admite peticiones por rango, así que en local no se
+> puede adelantar dentro de un vídeo. En GitHub sí funciona.
 
 ## Estructura
 
 ```
-index.html      carga los scripts por XHR y arranca todo
-1-scripts/      html.js · descarga.js · script.js · classes.js · estilos.css · p5.js
+index.html      la página; carga sus scripts con <script defer>
+1-scripts/
+  config.js     de dónde salen los vídeos
+  html.js       cE(): crear un elemento y colgarlo de su padre
+  classes.js    VideoObj: cada sendero del menú
+  descarga.js   los diez senderos y la carga perezosa de vídeo
+  script.js     pantallas, menú y reproducción encadenada
+  estilos.css   todo el diseño
 2-imagenes/     0.png … 9.png (miniaturas), logo.png, loading.gif
 3-audio/        audio.mp3 (fondo del menú)
-4-videos/       0.mp4 … 9.mp4 (los diez senderos)
+4-videos/       los diez senderos — NO están en el repositorio, ver LEEME.md
 5-fuentes/      andalemono.ttf
 ```
 
-Las rutas están escritas a mano dentro de los `.js`, así que **los nombres de
-las carpetas no se pueden cambiar** sin tocar `descarga.js` y `script.js`.
+Las rutas están escritas dentro de los `.js`, así que **los nombres de las
+carpetas no se pueden cambiar** sin tocar `config.js` y `descarga.js`.
 
 ### Los diez senderos
 
@@ -44,60 +53,81 @@ las carpetas no se pueden cambiar** sin tocar `descarga.js` y `script.js`.
 | 8 | Cine Poesía | Día                 | 2:06 | 46 MB |
 | 9 | Musa        | Interludio Fílmico  | 1:32 | 29 MB |
 
-Todos en H.264, 1300×432, 24 fps, entre 2,7 y 4,2 Mbps.
+Todos en H.264, 1300×432, 24 fps, entre 2,7 y 4,2 Mbps. **No se han vuelto a
+comprimir**: son los mismos bytes que servía el sitio original. El grano de la
+película se lleva mal con la compresión, así que reencodearlos más bajos
+emborronaría precisamente la textura que es la obra.
+
+## Los vídeos van en una release, no en el repositorio
+
+Pesan 632 MB. Se suben como adjuntos de una release de GitHub, que se sirven
+desde su CDN y no gastan la cuota de tráfico de Pages. Con la
+[CLI de GitHub](https://cli.github.com) instalada y los diez `.mp4` en
+`4-videos/`:
+
+```bash
+./tools/subir-videos.sh
+```
+
+El script imprime al final la línea que hay que pegar en `1-scripts/config.js`:
+
+```js
+var VIDEOS_BASE = "https://github.com/USUARIO/REPO/releases/download/videos-v1/";
+```
+
+Con `VIDEOS_BASE` vacío, el sitio los busca en la carpeta local. Así se puede
+trabajar sin conexión y publicar sin cambiar nada más.
 
 ## Qué se cambió respecto al original
 
-Nada del funcionamiento. Solo limpieza de `index.html`:
+El aspecto y el funcionamiento son los mismos. Todo lo de abajo es fontanería.
 
-- Se quitaron dos líneas comentadas que apuntaban a
-  `trozos.artesonoroenweb.com`, un sitio ajeno; eran código muerto heredado de
-  otro proyecto del programador.
-- `og:site_name` decía `"WebGL 1"`, el marcador de la plantilla. Ahora dice
-  `"Lenguajeo"`.
-- Sobraba un `<meta charset>` repetido.
+**Fuera p5.js.** Pesaba 3,6 MB, el 97% del JavaScript del sitio. Lo único que
+hacía era crear un lienzo de 100×100 píxeles y pintarlo de negro sesenta veces
+por segundo. Ese lienzo no se veía: el fondo negro lo pone el CSS.
 
-Se comprobó que **`p5.js` es byte a byte idéntico** a la versión oficial 1.1.9,
-y que los scripts propios no contienen código inyectado. Los únicos enlaces
-externos que quedan son los créditos a freesound.org, que son legítimos.
+**Los scripts se cargan con `<script defer>`.** Antes `index.html` bajaba cada
+uno por XHR, lo convertía en un blob y lo inyectaba, **uno detrás de otro**,
+esperando a que terminara el anterior. Los blobs además impedían que el
+navegador los guardara en caché, así que cada visita repetía la descarga
+entera.
 
-## Antes de publicarlo: tres cosas a decidir
+**Los vídeos se cargan al elegirlos.** Antes se bajaban los diez —632 MB—
+antes de enseñar el menú. Ahora el menú aparece de inmediato y mientras se
+reproduce un sendero se precarga solo el siguiente de la cola, así el
+encadenado sigue sin cortes.
 
-### 1. Pesa 632 MB y se descarga entero de golpe
+**Funciona en el móvil.** Antes no: el código detectaba si eras móvil y luego
+llamaba a la misma función en las tres ramas, así que la detección no hacía
+nada, y la constelación está colocada con coordenadas absolutas. Ahora, por
+debajo de 900 px, pasa a una rejilla de dos columnas con la ficha de cada
+sendero siempre visible, porque en una pantalla táctil no hay «pasar el ratón».
 
-`descarga.js` precarga los diez vídeos con `preload="auto"` **antes** de
-enseñar el menú. Cada visitante se baja los 632 MB aunque solo vaya a ver un
-sendero.
+**Cada sendero es un solo elemento.** Antes la miniatura y su ficha eran dos
+divs sueltos superpuestos con veinte reglas de coordenadas repetidas en el CSS.
+Ahora son uno, con diez reglas. Es lo que permite reordenarlos en el móvil.
 
-GitHub Pages tiene un límite de 1 GB por sitio y un tope recomendado de 100 GB
-de tráfico al mes: a 632 MB por visita, eso son unas **150 visitas al mes**
-antes de que GitHub empiece a limitar el sitio.
+**La pantalla completa ya no bloquea.** En Safari de iPhone la petición falla y
+antes dejaba al visitante ante una pantalla negra.
 
-La solución de una línea es cambiar `preload = "auto"` por `preload =
-"metadata"` en `descarga.js`: el menú aparecería casi al instante y cada vídeo
-se descargaría solo al elegirlo. Cambia el comportamiento, así que no se ha
-tocado.
+**Fuera la detección de navegador.** Doscientas líneas que miraban el userAgent
+buscando OmniWeb, iCab, Konqueror, Netscape y MSIE, para decidir entre tres
+ramas que hacían lo mismo.
 
-### 2. La contraseña está escrita en el JavaScript
+**Se puede navegar con el teclado.** Cada sendero responde a Tab y a Enter.
 
-`script.js` compara contra `"lenguajeo2023"` en texto plano. Cualquiera que
-abra el código fuente del navegador la ve. Hoy ya es así en el sitio publicado,
-pero **en un repositorio público de GitHub quedaría además en el historial**.
+**Fuera la contraseña.** Se comparaba en texto plano dentro de `script.js`, así
+que se leía abriendo el código fuente del navegador: no protegía nada. La
+película está abierta y se entra directo desde FILM.
 
-No hay forma de proteger de verdad un archivo estático desde el navegador. Si
-la película debe seguir restringida, hay que servirla desde un sitio que
-compruebe la contraseña en el servidor, o dejar los vídeos en una plataforma
-con enlaces privados.
+### El resultado
 
-### 3. Archivos grandes en Git
-
-`1.mp4` pesa 93 MB. GitHub rechaza cualquier archivo de más de 100 MB y avisa a
-partir de 50 MB, y ocho de los diez vídeos pasan de 46 MB. Además, cada vez que
-se reemplace un vídeo el repositorio crecerá con la copia antigua dentro del
-historial.
-
-Alternativas: Git LFS, dejar los vídeos fuera del repositorio (Cloudflare R2,
-Bunny, Vimeo) y apuntar a ellos desde `descarga.js`, o reencodearlos más bajos.
+|  | Antes | Ahora |
+|---|---:|---:|
+| Para ver el menú | 632 MB | 0,8 MB |
+| JavaScript | 3,7 MB | 30 KB |
+| Caché entre visitas | ninguna | completa |
+| En el móvil | roto | funciona |
 
 ## Publicar en GitHub Pages
 
