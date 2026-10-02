@@ -6,7 +6,7 @@
  * Ejemplo:
  *   var VIDEOS_BASE = "https://github.com/USUARIO/REPO/releases/download/videos-v1/";
  */
-var VIDEOS_BASE = "";
+var VIDEOS_BASE = "https://github.com/KinoLab07/lenguajeo/releases/download/videos-v1/";
 
 function urlVideo(i)
 {

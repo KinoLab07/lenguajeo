@@ -28,4 +28,4 @@ repo=$(gh repo view --json nameWithOwner -q .nameWithOwner)
 echo
 echo "Listo. Pon esto en 1-scripts/config.js:"
 echo
-echo "  window.VIDEOS_BASE = \"https://github.com/$repo/releases/download/$TAG/\";"
+echo "  var VIDEOS_BASE = \"https://github.com/$repo/releases/download/$TAG/\";"
