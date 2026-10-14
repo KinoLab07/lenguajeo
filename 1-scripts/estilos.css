@@ -163,6 +163,9 @@ video
 	position:absolute;
 	inset:0;
 	z-index:2;
+	/* La capa ocupa la pantalla entera y va por encima de #divInfo, así que
+	   se tragaba los clics del botón PLAY. Solo deben responder los senderos. */
+	pointer-events:none;
 }
 
 .sendero
@@ -172,6 +175,7 @@ video
 	height:18%;
 	cursor:pointer;
 	overflow:hidden;
+	pointer-events:auto;
 }
 
 .sendero:focus-visible
