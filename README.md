@@ -18,6 +18,18 @@ sin conexión. No hay dependencias ni proceso de compilación.
 > El servidor de Python no admite peticiones por rango, así que en local no se
 > puede adelantar dentro de un vídeo. En GitHub sí funciona.
 
+## Al tocar el CSS o el JavaScript, sube la versión
+
+En `index.html`, los archivos de `1-scripts/` se enlazan con `?v=N`. Ese número
+es lo único que hace que el navegador se baje la versión nueva: sin subirlo,
+quien ya haya visitado la página seguirá viendo la anterior durante horas,
+aunque el servidor ya tenga la corregida.
+
+```html
+<link rel="stylesheet" href="1-scripts/estilos.css?v=2">
+<script defer src="1-scripts/script.js?v=2"></script>
+```
+
 ## Estructura
 
 ```
